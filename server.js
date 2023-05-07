@@ -1,12 +1,21 @@
+// import npm packages
 const express = require('express');
-
 const util = require('util');
-
 const inquirer = require('inquirer');
 // Import and require mysql2
 const mysql = require('mysql2');
-
 require('dotenv').config();
+
+// import query functions
+const { 
+  viewAllEmployees,
+  viewAllEmployeesByDepartment, 
+  viewAllEmployeesByManager, 
+  addEmployee, 
+  removeEmployee, 
+  updateEmployeeRole, 
+  updateEmployeeManager 
+} = require('./db/index.js');
 
 const PORT = process.env.PORT || 8080;
 const app = express();
