@@ -1,5 +1,4 @@
 // import npm packages
-const express = require('express');
 const inquirer = require('inquirer');
 // Import and require mysql2
 const mysql = require('mysql2');
@@ -8,13 +7,6 @@ require('dotenv').config();
 
 // import query functions
 const { Employee, Role, Department } = require('./db/index.js');
-
-const PORT = process.env.PORT || 8080;
-const app = express();
-
-// Express middleware
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 
 // Connect to database
 const db = mysql.createConnection(
@@ -26,9 +18,8 @@ const db = mysql.createConnection(
   },
   console.log(`Connected to the employee_db database.`)
 );
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+db.connect((err) => {
+  if (err)console.log(err)
 });
 
 // inquirer prompts that lead to other questions using the classes imported for each table
