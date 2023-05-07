@@ -152,110 +152,110 @@ class Department {
 
 class Employee {
     constructor(id, first_name, last_name, role_id, manager_id) {
-      this.id = id;
-      this.first_name = first_name;
-      this.last_name = last_name;
-      this.role_id = role_id;
-      this.manager_id = manager_id;
+        this.id = id;
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.role_id = role_id;
+        this.manager_id = manager_id;
     }
-  
+
     static async getAllEmployees() {
-      try {
-        const query = 'SELECT * FROM employee';
-        const [rows, fields] = await db.query(query);
-        console.table(rows);
-      } catch (err) {
-        console.log(err);
-      }
+        try {
+            const query = 'SELECT * FROM employee';
+            const [rows, fields] = await db.query(query);
+            console.table(rows);
+        } catch (err) {
+            console.log(err);
+        }
     }
-  
+
     static async addEmployee() {
-      try {
-        const { first_name, last_name, role_id, manager_id } = await inquirer.prompt([
-          {
-            name: 'first_name',
-            type: 'input',
-            message: "Enter the employee's first name:",
-          },
-          {
-            name: 'last_name',
-            type: 'input',
-            message: "Enter the employee's last name:",
-          },
-          {
-            name: 'role_id',
-            type: 'input',
-            message: "Enter the employee's role ID:",
-          },
-          {
-            name: 'manager_id',
-            type: 'input',
-            message: "Enter the employee's manager ID:",
-          },
-        ]);
-  
-        const query = 'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)';
-        const [rows, fields] = await db.query(query, [first_name, last_name, role_id, manager_id]);
-        console.table(rows);
-      } catch (err) {
-        console.log(err);
-      }
+        try {
+            const { first_name, last_name, role_id, manager_id } = await inquirer.prompt([
+                {
+                    name: 'first_name',
+                    type: 'input',
+                    message: "Enter the employee's first name:",
+                },
+                {
+                    name: 'last_name',
+                    type: 'input',
+                    message: "Enter the employee's last name:",
+                },
+                {
+                    name: 'role_id',
+                    type: 'input',
+                    message: "Enter the employee's role ID:",
+                },
+                {
+                    name: 'manager_id',
+                    type: 'input',
+                    message: "Enter the employee's manager ID:",
+                },
+            ]);
+
+            const query = 'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)';
+            const [rows, fields] = await db.query(query, [first_name, last_name, role_id, manager_id]);
+            console.table(rows);
+        } catch (err) {
+            console.log(err);
+        }
     }
-  
+
     static async removeEmployee() {
-      try {
-        const { id } = await inquirer.prompt([
-          {
-            name: 'id',
-            type: 'input',
-            message: "Enter the ID of the employee you'd like to remove:",
-          },
-        ]);
-  
-        const query = 'DELETE FROM employee WHERE id = ?';
-        const [rows, fields] = await db.query(query, [id]);
-        console.table(rows);
-      } catch (err) {
-        console.log(err);
-      }
+        try {
+            const { id } = await inquirer.prompt([
+                {
+                    name: 'id',
+                    type: 'input',
+                    message: "Enter the ID of the employee you'd like to remove:",
+                },
+            ]);
+
+            const query = 'DELETE FROM employee WHERE id = ?';
+            const [rows, fields] = await db.query(query, [id]);
+            console.table(rows);
+        } catch (err) {
+            console.log(err);
+        }
     }
-  
+
     static async updateEmployeeRole() {
-      try {
-        const employees = await db.query('SELECT * FROM employee');
-        const employeeChoices = employees[0].map((employee) => ({
-          name: `${employee.first_name} ${employee.last_name}`,
-          value: employee.id,
-        }));
-  
-        const roles = await db.query('SELECT * FROM role');
-        const roleChoices = roles[0].map((role) => ({
-          name: role.title,
-          value: role.id,
-        }));
-  
-        const { employeeId, roleId } = await inquirer.prompt([
-          {
-            name: 'employeeId',
-            type: 'list',
-            message: 'Select the employee to update:',
-            choices: employeeChoices,
-          },
-          {
-            name: 'roleId',
-            type: 'list',
-            message: 'Select the new role:',
-            choices: roleChoices,
-          },
-        ]);
-  
-        const query = 'UPDATE employee SET role_id = ? WHERE id = ?';
-        const [rows, fields] = await db.query(query, [roleId, employeeId]);
-        console.log(`Employee role updated successfully`);
-      } catch (err) {
-        console.log(err);
-      }
+        try {
+            const employees = await db.query('SELECT * FROM employee');
+            const employeeChoices = employees[0].map((employee) => ({
+                name: `${employee.first_name} ${employee.last_name}`,
+                value: employee.id,
+            }));
+
+            const roles = await db.query('SELECT * FROM role');
+            const roleChoices = roles[0].map((role) => ({
+                name: role.title,
+                value: role.id,
+            }));
+
+            const { employeeId, roleId } = await inquirer.prompt([
+                {
+                    name: 'employeeId',
+                    type: 'list',
+                    message: 'Select the employee to update:',
+                    choices: employeeChoices,
+                },
+                {
+                    name: 'roleId',
+                    type: 'list',
+                    message: 'Select the new role:',
+                    choices: roleChoices,
+                },
+            ]);
+
+            const query = 'UPDATE employee SET role_id = ? WHERE id = ?';
+            const [rows, fields] = await db.query(query, [roleId, employeeId]);
+            console.log(`Employee role updated successfully`);
+        } catch (err) {
+            console.log(err);
+        }
     }
-  }
+}
 // export the classes
 module.exports = { Department, Role, Employee };
