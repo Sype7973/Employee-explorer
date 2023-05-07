@@ -11,7 +11,7 @@ const db = mysql.createConnection(
       database: process.env.DB_NAME,
     },
     console.log(`Connected to the employee_db database.`)
-  );
+  ).promise();
 
 // helper functions for adding employees, roles, and departments using 
 // console.table to display the data
@@ -22,22 +22,19 @@ class Department {
       this.name = name;
     }
   
-    static getAllDepartments() {
-      return new Promise(async (resolve, reject) => {
+    static async getAllDepartments() {
         try {
           const query = 'SELECT * FROM department';
           const [rows, fields] = await db.query(query);
           console.table(rows);
-          resolve(rows);
+          return rows;
         } catch (err) {
           console.log(err);
-          reject(err);
+          throw err;
         }
-      });
     }
   
-    static addDepartment() {
-      return new Promise(async (resolve, reject) => {
+    static async addDepartment() {
         try {
           const { name } = await inquirer.prompt([
             {
@@ -50,16 +47,14 @@ class Department {
           const query = 'INSERT INTO department (name) VALUES (?)';
           const [rows, fields] = await db.query(query, [name]);
           console.log(`Department ${name} added successfully`);
-          resolve(rows);
+          return rows;
         } catch (err) {
           console.log(err);
-          reject(err);
+          throw err;
         }
-      });
     }
-  
-    static removeDepartment() {
-      return new Promise(async (resolve, reject) => {
+
+    static async removeDepartment() {
         try {
           const departments = await db.query('SELECT * FROM department');
           const departmentChoices = departments[0].map((department) => ({
@@ -79,14 +74,14 @@ class Department {
           const query = 'DELETE FROM department WHERE id = ?';
           const [rows, fields] = await db.query(query, [departmentId]);
           console.log(`Department removed successfully`);
-          resolve(rows);
+          return rows;
         } catch (err) {
           console.log(err);
-          reject(err);
+          throw err;
         }
-      });
+        }
     }
-  }
+
   
   class Role {
     constructor(id, title, salary, department_id) {
@@ -96,22 +91,19 @@ class Department {
       this.department_id = department_id;
     }
   
-    static getAllRoles() {
-      return new Promise(async (resolve, reject) => {
+    static async getAllRoles() {
         try {
           const query = 'SELECT * FROM role';
           const [rows, fields] = await db.query(query);
           console.table(rows);
-          resolve(rows);
+          return rows;
         } catch (err) {
           console.log(err);
-          reject(err);
+          throw err;
         }
-      });
     }
   
-    static addRole() {
-      return new Promise(async (resolve, reject) => {
+    static async addRole() {
         try {
           const departments = await db.query('SELECT * FROM department');
           const departmentChoices = departments[0].map((department) => ({
@@ -141,12 +133,11 @@ class Department {
           const query = 'INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)';
           const [rows, fields] = await db.query(query, [title, salary, departmentId]);
           console.log(`Role ${title} added successfully`);
-          resolve(rows);
+          return rows;
         } catch (err) {
           console.log(err);
-            reject(err);
+          throw err;
         }
-        });
     }
 }
 

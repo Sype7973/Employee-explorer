@@ -77,6 +77,7 @@ const promptUser = async () => {
           break;
         case 'Exit':
           db.end();
+          console.log('Goodbye!');
           return;
         default:
           console.log(`Invalid action: ${action}`);
