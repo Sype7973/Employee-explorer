@@ -1,9 +1,3 @@
-// import database connection
-const db = require('./server.js');
-
-const mysql = require('mysql2');
-
-const cTable = require('console.table');
 
 
 
@@ -117,3 +111,6 @@ class Department {
 
   }
 } 
+
+// export the classes
+module.exports = { Department, Role, Employee };
