@@ -12,7 +12,7 @@ class Department {
     static async getAllDepartments() {
       try {
         const query = 'SELECT * FROM department';
-        const [rows, fields] = await db.query(query);
+        const [rows, fields] = db.query(query);
         console.table(rows);
       } catch (err) {
         console.log(err);
@@ -30,11 +30,35 @@ class Department {
         ]);
   
         const query = 'INSERT INTO department (name) VALUES (?)';
-        const [rows, fields] = await db.query(query, [name]);
+        const [rows, fields] = db.query(query, [name]);
         console.log(`Department ${name} added successfully`);
       } catch (err) {
         console.log(err);
       }
+    }
+    static async removeDepartment() {
+        try {
+            const departments = db.query('SELECT * FROM department');
+            const departmentChoices = departments[0].map((department) => ({
+            name: department.name,
+            value: department.id,
+            }));
+    
+            const { departmentId } = await inquirer.prompt([
+            {
+                name: 'departmentId',
+                type: 'list',
+                message: 'Select the department to remove:',
+                choices: departmentChoices,
+            },
+            ]);
+    
+            const query = 'DELETE FROM department WHERE id = ?';
+            const [rows, fields] = db.query(query, [departmentId]);
+            console.log(`Department removed successfully`);
+        } catch (err) {
+            console.log(err);
+        }
     }
   }
   
@@ -49,7 +73,7 @@ class Department {
     static async getAllRoles() {
       try {
         const query = 'SELECT * FROM role';
-        const [rows, fields] = await db.query(query);
+        const [rows, fields] = db.query(query);
         console.table(rows);
       } catch (err) {
         console.log(err);
@@ -58,7 +82,7 @@ class Department {
   
     static async addRole() {
       try {
-        const departments = await db.query('SELECT * FROM department');
+        const departments = db.query('SELECT * FROM department');
         const departmentChoices = departments[0].map((department) => ({
           name: department.name,
           value: department.id,
@@ -84,12 +108,37 @@ class Department {
         ]);
   
         const query = 'INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)';
-        const [rows, fields] = await db.query(query, [title, salary, departmentId]);
+        const [rows, fields] =  db.query(query, [title, salary, departmentId]);
         console.log(`Role ${title} added successfully`);
       } catch (err) {
         console.log(err);
       }
     }
+    static async removeRole() {
+        try {
+            const roles = db.query('SELECT * FROM role');
+            const roleChoices = roles[0].map((role) => ({
+            name: role.title,
+            value: role.id,
+            }));
+    
+            const { roleId } = await inquirer.prompt([
+            {
+                name: 'roleId',
+                type: 'list',
+                message: 'Select the role to remove:',
+                choices: roleChoices,
+            },
+            ]);
+    
+            const query = 'DELETE FROM role WHERE id = ?';
+            const [rows, fields] = db.query(query, [roleId]);
+            console.log(`Role removed successfully`);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
   }
   
 class Employee {
@@ -104,7 +153,7 @@ class Employee {
     static async getAllEmployees() {
       try {
         const query = 'SELECT * FROM employee';
-        const [rows, fields] = await db.query(query);
+        const [rows, fields] = db.query(query);
         console.table(rows);
       } catch (err) {
         console.log(err);
@@ -137,7 +186,7 @@ class Employee {
         ]);
   
         const query = 'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)';
-        const [rows, fields] = await db.query(query, [first_name, last_name, role_id, manager_id]);
+        const [rows, fields] = db.query(query, [first_name, last_name, role_id, manager_id]);
         console.table(rows);
       } catch (err) {
         console.log(err);
@@ -155,11 +204,47 @@ class Employee {
         ]);
   
         const query = 'DELETE FROM employee WHERE id = ?';
-        const [rows, fields] = await db.query(query, [id]);
+        const [rows, fields] = db.query(query, [id]);
         console.table(rows);
       } catch (err) {
         console.log(err);
       }
+    }
+    static async updateEmployeeRole() {
+        try {
+            const employees = db.query('SELECT * FROM employee');
+            const employeeChoices = employees[0].map((employee) => ({
+            name: `${employee.first_name} ${employee.last_name}`,
+            value: employee.id,
+            }));
+    
+            const roles = db.query('SELECT * FROM role');
+            const roleChoices = roles[0].map((role) => ({
+            name: role.title,
+            value: role.id,
+            }));
+    
+            const { employeeId, roleId } = await inquirer.prompt([
+            {
+                name: 'employeeId',
+                type: 'list',
+                message: 'Select the employee to update:',
+                choices: employeeChoices,
+            },
+            {
+                name: 'roleId',
+                type: 'list',
+                message: 'Select the new role:',
+                choices: roleChoices,
+            },
+            ]);
+    
+            const query = 'UPDATE employee SET role_id = ? WHERE id = ?';
+            const [rows, fields] = db.query(query, [roleId, employeeId]);
+            console.log(`Employee role updated successfully`);
+        } catch (err) {
+            console.log(err);
+        }
     }
   }
 // export the classes
