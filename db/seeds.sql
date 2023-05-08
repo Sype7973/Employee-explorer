@@ -14,14 +14,14 @@ VALUES ('Sales Lead', 100000.00, 1),
        ('Legal Compliance Officer', 250000.00, 4),
        ('Lawyer', 190000.00, 4);
 
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES  ('John', 'Smith', 1, NULL),
-        ('Mike', 'Lee', 2, 1),
-        ('Ashley', 'Stephenson', 2, 1),
-        ('Adam', 'Day', 4, 2),
-        ('Jacob', "Rollo", 3, NULL),
-        ('Kevin', 'Bacon', 4, 2),
-        ('Tory', 'Brown', 5, NULL),
-        ('Sarah', 'Ladley', 6, NULL),
-        ('Bob', 'Philips', 7, 3),
-        ('Samantha', 'Jones', 7, 3);
+INSERT INTO employee (first_name, last_name, salary, role_id, manager_id)
+VALUES  ('John', 'Smith', 100000.00, 1, NULL),
+        ('Mike', 'Lee', 80000.00, 2, 1),
+        ('Ashley', 'Stephenson', 80000.00, 2, 1),
+        ('Adam', 'Day', 120000.00, 4, 2),
+        ('Jacob', "Rollo", 150000.00, 3, NULL),
+        ('Kevin', 'Bacon', 120000.00, 4, 2),
+        ('Tory', 'Brown', 125000.00, 5, NULL),
+        ('Sarah', 'Ladley', 250000.00, 6, NULL),
+        ('Bob', 'Philips', 190000.00, 7, 3),
+        ('Samantha', 'Jones', 190000.00, 7, 3);

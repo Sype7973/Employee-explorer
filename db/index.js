@@ -96,8 +96,8 @@ class Department {
                 choices: departmentChoices,
               },
             ]);
-    
-            const query = 'SELECT SUM(salary) FROM role WHERE department_id = ?';
+              // group by statement, and need to join the employee/department tables to create the budget
+            const query = 'SELECT SUM(salary) FROM employee WHERE role_id = ?';
             const [rows, fields] = await db.query(query, [departmentId]);
             console.log(`Department budget viewed successfully`);
             console.table(rows);
