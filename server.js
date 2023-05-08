@@ -41,6 +41,7 @@ const promptUser = async () => {
           'Remove an employee',
           'Remove a department',
           'Remove a role',
+          "View Department's Budget",
           'Exit',
         ],
       });
@@ -74,6 +75,9 @@ const promptUser = async () => {
           break;
         case 'Remove a role':
           await Role.removeRole();
+          break;
+        case "View Department's Budget":
+          await Department.viewDepartmentBudget();
           break;
         case 'Exit':
           db.end();

@@ -80,8 +80,34 @@ class Department {
           throw err;
         }
         }
-    }
-
+        static async viewDepartmentBudget() {
+          try {
+            const departments = await db.query('SELECT * FROM department');
+            const departmentChoices = departments[0].map((department) => ({
+              name: department.name,
+              value: department.id,
+            }));
+    
+            const { departmentId } = await inquirer.prompt([
+              {
+                name: 'departmentId',
+                type: 'list',
+                message: 'Select the department to view budget:',
+                choices: departmentChoices,
+              },
+            ]);
+    
+            const query = 'SELECT SUM(salary) FROM role WHERE department_id = ?';
+            const [rows, fields] = await db.query(query, [departmentId]);
+            console.log(`Department budget viewed successfully`);
+            console.table(rows);
+          }
+          catch (err) {
+            console.log(err);
+            throw err;
+          }
+  }
+}
   
   class Role {
     constructor(id, title, salary, department_id) {
@@ -139,6 +165,32 @@ class Department {
           throw err;
         }
     }
+    static async removeRole() {
+      try {
+        const roles = await db.query('SELECT * FROM role');
+        const roleChoices = roles[0].map((role) => ({
+          name: role.title,
+          value: role.id,
+        }));
+      
+        const { roleId } = await inquirer.prompt([
+          {
+            name: 'roleId',
+            type: 'list',
+            message: 'Select the role to remove:',
+            choices: roleChoices,
+          },
+        ]);
+        
+        const query = 'DELETE FROM role WHERE id = ?';
+        const [rows, fields] = await db.query(query, [roleId]);
+        console.log(`Role removed successfully`);
+        return rows;
+      } catch (err) {
+        console.log(err);
+        throw err;
+      }
+  }
 }
 
 class Employee {
@@ -240,7 +292,7 @@ class Employee {
                 },
             ]);
 
-            const query = 'UPDATE employee SET role_id = ? WHERE id = ?';
+            const query = 'UPDATE employee SET role_id AS `employee_role` = ? WHERE id = ?';
             const [rows, fields] = await db.query(query, [roleId, employeeId]);
             console.log(`Employee role updated successfully`);
         } catch (err) {
