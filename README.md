@@ -20,6 +20,11 @@
 - To remove a manager you must first assign them to another role.
 - To remove an employee you must first remove them from any roles they are assigned to. You will receive an error message if trying to remove a role that has an employee assigned to it or an employee that has an assigned manager.
 
+Link to video of CLI in use:
+
+https://drive.google.com/file/d/1r8u86mB3OYW3DyckVXuD-wGa3FnDVeT6/view
+
+
 ![Screenshot of the command line interface in action](/img/screencap.PNG)
 
 ## Features
