@@ -97,10 +97,11 @@ class Department {
               },
             ]);
               // group by statement, and need to join the employee/department tables to create the budget
-            const query = 'SELECT SUM(salary) FROM employee WHERE role_id = ?';
-            const [rows, fields] = await db.query(query, [departmentId]);
-            console.log(`Department budget viewed successfully`);
-            console.table(rows);
+              // use joining statements; d.name, join role r ON e.role_id; r.department_id = d.id is a join condition which specifies we want to join the role and department 
+              const query = 'SELECT d.name AS department, SUM(e.salary) AS total_budget FROM employee e JOIN role r ON e.role_id = r.id JOIN department d ON r.department_id = d.id WHERE d.id = ? GROUP BY d.id';
+              const [rows, fields] = await db.query(query, [departmentId]);
+              console.log(`Department budget viewed successfully`);
+              console.table(rows);
           }
           catch (err) {
             console.log(err);
@@ -201,50 +202,64 @@ class Employee {
         this.role_id = role_id;
         this.manager_id = manager_id;
     }
-
+  // this function will get all employees from the database
+  // the query will join the employee and role tables to display roles
+  // the query will also display the employee's first name, last name, role, and manager
     static async getAllEmployees() {
-        try {
-            const query = 'SELECT * FROM employee';
-            const [rows, fields] = await db.query(query);
-            console.table(rows);
-        } catch (err) {
-            console.log(err);
-        }
+      try {
+        const query = `
+          SELECT e.*, r.title
+          FROM employee e
+          JOIN role r ON e.role_id = r.id
+        `;
+        const [rows, fields] = await db.query(query);
+        console.table(rows);
+      } catch (err) {
+        console.log(err);
+      }
     }
-
+    // this function will prompt the user to add an employee
+    // the user will be prompted to enter the employee's first name, last name, role id, and manager id
+    // the role id and manager id will be used to determine the employee's role and manager
     static async addEmployee() {
-        try {
-            const { first_name, last_name, role_id, manager_id } = await inquirer.prompt([
-                {
-                    name: 'first_name',
-                    type: 'input',
-                    message: "Enter the employee's first name:",
-                },
-                {
-                    name: 'last_name',
-                    type: 'input',
-                    message: "Enter the employee's last name:",
-                },
-                {
-                    name: 'role_id',
-                    type: 'input',
-                    message: "Enter the employee's role ID:",
-                },
-                {
-                    name: 'manager_id',
-                    type: 'input',
-                    message: "Enter the employee's manager ID:",
-                },
-            ]);
-
-            const query = 'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)';
-            const [rows, fields] = await db.query(query, [first_name, last_name, role_id, manager_id]);
-            console.table(rows);
-        } catch (err) {
-            console.log(err);
-        }
+      try {
+        const { first_name, last_name, role_id, manager_id } = await inquirer.prompt([
+          {
+            name: 'first_name',
+            type: 'input',
+            message: "Enter the employee's first name:",
+          },
+          {
+            name: 'last_name',
+            type: 'input',
+            message: "Enter the employee's last name:",
+          },
+          {
+            name: 'role_id',
+            type: 'input',
+            message: "Enter the employee's role ID:",
+          },
+          {
+            name: 'manager_id',
+            type: 'input',
+            message: "Enter the employee's manager ID:",
+          },
+        ]);
+    
+        const query = 'SELECT salary FROM role WHERE id = ?';
+        const [rows, fields] = await db.query(query, [role_id]);
+        const { salary } = rows[0];
+    
+        const insertQuery = 'INSERT INTO employee (first_name, last_name, salary, role_id, manager_id) VALUES (?, ?, ?, ?, ?)';
+        const [insertRows, insertFields] = await db.query(insertQuery, [first_name, last_name, salary, role_id, manager_id]);
+        console.table(insertRows);
+      } catch (err) {
+        console.log(err);
+      }
     }
-
+    // this function removes an employee from the database
+    // it selects all employees from the database
+    // then prompts the user to select an employee to remove
     static async removeEmployee() {
         try {
             const { id } = await inquirer.prompt([
@@ -262,7 +277,12 @@ class Employee {
             console.log(err);
         }
     }
-
+    // this function updates an employee role by selecting the employee 
+    // and role from the database and updating the employee's role
+    // with the new role
+    // it selects all employees and all roles from the database
+    // then prompts the user to select an employee and a new role
+    // then updates the employee's role with the new role
     static async updateEmployeeRole() {
         try {
             const employees = await db.query('SELECT * FROM employee');
