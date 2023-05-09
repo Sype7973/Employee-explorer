@@ -33,3 +33,5 @@ https://drive.google.com/file/d/1r8u86mB3OYW3DyckVXuD-wGa3FnDVeT6/view
 - You can delete a department, role, or employee
 - You can update an employee's role
 
+
+Thank you for using my app!
